@@ -83,13 +83,18 @@ def scrap(base_url, article, output_file, session_file):
     # get plain text from each <p>
     p_list = content.find_all('p')
     print(article)
-    with open("output/"+article[6:]+".txt", 'a') as fout:
-        for p in p_list:
-            text = p.get_text().strip()
-            text = parenthesis_regex.sub('', text)
-            text = citations_regex.sub('', text)
-            if text:
-                fout.write(text + '\n\n')  # extra line between paragraphs
+    article = re.sub(r'[^A-Za-z0-9\s\_]', '', article[6:])
+    if len(article) > 0:
+        with open("output/"+article+".txt", 'a', encoding='utf-8') as fout:
+            for p in p_list:
+                text = p.get_text().strip()
+                text = parenthesis_regex.sub('', text)
+                text = citations_regex.sub('', text)
+                try:
+                    if text:
+                        fout.write(text + '\n\n')  # extra line between paragraphs
+                except:
+                    pass
 
 
 def main(initial_url, articles_limit, interval, output_file):
